@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>進階工程計算機 (Advanced Scientific Calculator)</title>
+    <!-- 引入美觀的 Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="calculator-container">
+        <!-- 計算機本體 -->
+        <div class="calculator">
+            <!-- 頂部資訊與模式指示器 -->
+            <div class="calc-header">
+                <span class="logo">QUANTUM CALC</span>
+                <div class="indicators">
+                    <span id="indicator-2nd" class="indicator">2ND</span>
+                    <span id="indicator-angle" class="indicator active">DEG</span>
+                </div>
+            </div>
+
+            <!-- 雙顯示螢幕 -->
+            <div class="display-container">
+                <!-- 上方顯示完整公式 -->
+                <div id="formula-display" class="formula-display"></div>
+                <!-- 下方顯示當前輸入與結果 -->
+                <input type="text" id="display" readonly value="0">
+            </div>
+
+            <!-- 按鍵區域 -->
+            <div class="buttons">
+                <!-- 第一行 -->
+                <button class="btn func-btn" id="btn-2nd" onclick="toggle2nd()">2nd</button>
+                <button class="btn func-btn" id="btn-angle" onclick="toggleAngleMode()">deg</button>
+                <button class="btn clear-btn" onclick="clearDisplay()">C</button>
+                <button class="btn action-btn" onclick="backspace()">⌫</button>
+                <button class="btn operator" onclick="appendOperator('/')">÷</button>
+                
+                <!-- 第二行 -->
+                <button class="btn scientific-btn" id="btn-sin" onclick="appendScientific('sin(')">sin</button>
+                <button class="btn scientific-btn" id="btn-cos" onclick="appendScientific('cos(')">cos</button>
+                <button class="btn scientific-btn" id="btn-tan" onclick="appendScientific('tan(')">tan</button>
+                <button class="btn num-btn" onclick="appendNumber('7')">7</button>
+                <button class="btn num-btn" onclick="appendNumber('8')">8</button>
+                
+                <!-- 第三行 -->
+                <button class="btn scientific-btn" id="btn-ln" onclick="appendScientific('ln(')">ln</button>
+                <button class="btn scientific-btn" id="btn-log" onclick="appendScientific('log(')">log</button>
+                <button class="btn scientific-btn" id="btn-sqrt" onclick="appendScientific('√(')">√</button>
+                <button class="btn num-btn" onclick="appendNumber('4')">4</button>
+                <button class="btn num-btn" onclick="appendNumber('5')">5</button>
+                
+                <!-- 第四行 -->
+                <button class="btn scientific-btn" id="btn-power" onclick="appendOperator('^')">^</button>
+                <button class="btn scientific-btn" onclick="appendConstant('π')">π</button>
+                <button class="btn scientific-btn" onclick="appendConstant('e')">e</button>
+                <button class="btn num-btn" onclick="appendNumber('1')">1</button>
+                <button class="btn num-btn" onclick="appendNumber('2')">2</button>
+                
+                <!-- 第五行 -->
+                <button class="btn scientific-btn" onclick="appendOperator('!')">!</button>
+                <button class="btn scientific-btn" onclick="appendOperator('%')">%</button>
+                <button class="btn scientific-btn" onclick="appendValue('(')">(</button>
+                <button class="btn num-btn" onclick="appendNumber('0')">0</button>
+                <button class="btn num-btn" onclick="appendNumber('.')">.</button>
+                
+                <!-- 第六行 -->
+                <button class="btn action-btn" onclick="toggleHistory()">Hist</button>
+                <button class="btn scientific-btn" onclick="appendValue(')')">)</button>
+                <button class="btn scientific-btn" onclick="toggleSign()">+/-</button>
+                <button class="btn operator" onclick="appendOperator('*')">×</button>
+                <button class="btn operator" onclick="appendOperator('-')">-</button>
+                
+                <!-- 第七行 (最底層，+ 與 = 平行) -->
+                <button class="btn operator" onclick="appendOperator('+')">+</button>
+                <button class="btn equals" onclick="calculate()" id="btn-equals">=</button>
+            </div>
+        </div>
+
+        <!-- 側邊滑入式歷史紀錄面板 -->
+        <div class="history-drawer" id="history-drawer">
+            <div class="drawer-header">
+                <h3>計算歷史</h3>
+                <button class="close-btn" onclick="toggleHistory()">&times;</button>
+            </div>
+            <div class="history-list" id="history-list">
+                <div class="empty-history">暫無計算紀錄</div>
+            </div>
+            <div class="drawer-footer">
+                <button class="clear-history-btn" onclick="clearHistory()">清除全部紀錄</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

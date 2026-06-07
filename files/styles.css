@@ -1,0 +1,437 @@
+/* ==========================================================================
+   全域變數與重設 (Global Variables & Reset)
+   ========================================================================== */
+:root {
+    --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+    --glass-bg: rgba(15, 23, 42, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    
+    /* 按鍵配色 */
+    --btn-num-bg: rgba(255, 255, 255, 0.06);
+    --btn-num-color: #f8fafc;
+    --btn-num-hover: rgba(255, 255, 255, 0.12);
+    
+    --btn-func-bg: rgba(99, 102, 241, 0.15);
+    --btn-func-color: #818cf8;
+    --btn-func-hover: rgba(99, 102, 241, 0.25);
+    
+    --btn-sci-bg: rgba(168, 85, 247, 0.1);
+    --btn-sci-color: #c084fc;
+    --btn-sci-hover: rgba(168, 85, 247, 0.2);
+    
+    --btn-op-bg: rgba(244, 63, 94, 0.15);
+    --btn-op-color: #fb7185;
+    --btn-op-hover: rgba(244, 63, 94, 0.25);
+    
+    --btn-clear-bg: rgba(239, 68, 68, 0.15);
+    --btn-clear-color: #f87171;
+    --btn-clear-hover: rgba(239, 68, 68, 0.25);
+    
+    --btn-equals-bg: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    --btn-equals-color: #ffffff;
+    --btn-equals-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-accent: #38bdf8;
+    
+    --transition-speed: 0.2s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    overflow: hidden;
+    perspective: 1000px;
+}
+
+/* ==========================================================================
+   版面容器與毛玻璃特效 (Layout & Glassmorphism Card)
+   ========================================================================== */
+.calculator-container {
+    position: relative;
+    width: 380px;
+    height: 680px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.5s ease;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* 計算機頂部 */
+.calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.calc-header .logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text-secondary);
+    text-shadow: 0 0 8px rgba(148, 163, 184, 0.2);
+}
+
+.indicators {
+    display: flex;
+    gap: 8px;
+}
+
+.indicator {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.25);
+    transition: all var(--transition-speed);
+    letter-spacing: 0.5px;
+}
+
+.indicator.active {
+    background: rgba(56, 189, 248, 0.2);
+    color: var(--text-accent);
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+}
+
+/* ==========================================================================
+   雙顯示螢幕區 (Dual Display Screen)
+   ========================================================================== */
+.display-container {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 110px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.formula-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    color: var(--text-secondary);
+    text-align: right;
+    min-height: 20px;
+    word-break: break-all;
+    margin-bottom: 8px;
+    overflow-y: auto;
+    max-height: 40px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.formula-display::-webkit-scrollbar {
+    display: none; /* Safari & Chrome */
+}
+
+#display {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 36px;
+    text-align: right;
+    font-weight: 400;
+    outline: none;
+    padding: 0;
+    letter-spacing: -0.5px;
+}
+
+/* ==========================================================================
+   按鍵網格與美化 (Button Grid & Styling)
+   ========================================================================== */
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.btn {
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+}
+
+/* 各類按鍵樣式 */
+.btn.num-btn {
+    background: var(--btn-num-bg);
+    color: var(--btn-num-color);
+    font-size: 16px;
+    font-weight: 600;
+    border-color: rgba(255, 255, 255, 0.01);
+}
+
+.btn.num-btn:hover {
+    background: var(--btn-num-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+.btn.scientific-btn {
+    background: var(--btn-sci-bg);
+    color: var(--btn-sci-color);
+}
+
+.btn.scientific-btn:hover {
+    background: var(--btn-sci-hover);
+    transform: translateY(-2px);
+}
+
+.btn.func-btn {
+    background: var(--btn-func-bg);
+    color: var(--btn-func-color);
+}
+
+.btn.func-btn:hover {
+    background: var(--btn-func-hover);
+    transform: translateY(-2px);
+}
+
+.btn.operator {
+    background: var(--btn-op-bg);
+    color: var(--btn-op-color);
+    font-size: 16px;
+}
+
+.btn.operator:hover {
+    background: var(--btn-op-hover);
+    transform: translateY(-2px);
+}
+
+.btn.clear-btn {
+    background: var(--btn-clear-bg);
+    color: var(--btn-clear-color);
+}
+
+.btn.clear-btn:hover {
+    background: var(--btn-clear-hover);
+    transform: translateY(-2px);
+}
+
+.btn.action-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-secondary);
+}
+
+.btn.action-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+}
+
+/* 等於鍵 (跨越下方) */
+.btn.equals {
+    grid-column: 2 / span 4;
+    background: var(--btn-equals-bg);
+    color: var(--btn-equals-color);
+    font-size: 18px;
+    font-weight: 700;
+    box-shadow: var(--btn-equals-shadow);
+}
+
+.btn.equals:hover {
+    opacity: 0.95;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+}
+
+/* 按下時的縮放與回饋效果 */
+.btn:active {
+    transform: scale(0.95) !important;
+}
+
+/* 2nd 按鍵激活狀態 */
+.btn.func-btn.active {
+    background: #818cf8;
+    color: #0f172a;
+    font-weight: 700;
+    box-shadow: 0 0 12px rgba(129, 140, 248, 0.6);
+}
+
+/* ==========================================================================
+   側邊歷史紀錄滑入面板 (History Drawer)
+   ========================================================================== */
+.history-drawer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-left: 1px solid var(--glass-border);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 24px;
+}
+
+.history-drawer.open {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.drawer-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+    transition: color var(--transition-speed);
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.history-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+}
+
+/* 滾動條美化 */
+.history-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.history-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.history-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.history-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.empty-history {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+.history-item {
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.history-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+}
+
+.history-item-formula {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
+    text-align: right;
+    word-break: break-all;
+    margin-bottom: 4px;
+}
+
+.history-item-result {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 18px;
+    color: var(--text-accent);
+    text-align: right;
+    font-weight: 600;
+}
+
+.drawer-footer {
+    padding: 16px 24px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.clear-history-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all var(--transition-speed);
+}
+
+.clear-history-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   鍵盤導航提示與外觀 (Keyboard Focus Focus State)
+   ========================================================================== */
+.btn:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: -2px;
+}
